@@ -1,0 +1,178 @@
+﻿@model List<DivaSalon.Models.Service>
+@{
+    ViewData["Title"] = "Gestionare Servicii";
+}
+
+<div class="admin-services">
+    <div class="page-header">
+        <h1>Gestionare Servicii</h1>
+        <button onclick="openAddModal()" class="btn btn-primary">Adauga serviciu nou</button>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert-success">@TempData["Success"]</div>
+    }
+
+    <div class="services-cards-grid">
+        @foreach (var service in Model)
+        {
+            <div class="service-card">
+                <div class="service-card-header">
+                    <div class="service-category">@service.Category</div>
+                    <div class="service-status">
+                        <span class="status-badge @(service.IsActive ? "active" : "inactive")">
+                            @(service.IsActive ? "Activ" : "Inactiv")
+                        </span>
+                    </div>
+                </div>
+                <div class="service-card-body">
+                    <h3 class="service-name">@service.Name</h3>
+                    <div class="service-price">
+                        @if (service.PriceTo.HasValue && service.PriceTo.Value > 0 && service.PriceTo.Value != service.PriceFrom)
+                        {
+                            <span>@service.PriceFrom - @service.PriceTo.Value MDL</span>
+                        }
+                        else
+                        {
+                            <span>De la @service.PriceFrom MDL</span>
+                        }
+                    </div>
+                </div>
+                <div class="service-card-actions">
+                    <button onclick="editService(@service.Id)" class="btn-icon">Editeaza</button>
+                    <form method="post" asp-action="ToggleServiceStatus" asp-controller="Admin" style="display: inline; flex: 1;">
+                        <input type="hidden" name="id" value="@service.Id" />
+                        <button type="submit" class="btn-icon" style="width: 100%;">
+                            @(service.IsActive ? "Dezactiveaza" : "Activeaza")
+                        </button>
+                    </form>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<div id="serviceModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modalTitle">Adauga serviciu nou</h2>
+            <span onclick="closeModal()" style="font-size:28px; cursor:pointer; color:#aaa; position:absolute; right:20px; top:10px;">&times;</span>
+        </div>
+        <form id="serviceForm" method="post" asp-action="AddService" asp-controller="Admin">
+            @Html.AntiForgeryToken()
+            <input type="hidden" id="serviceId" name="Id" value="0">
+            
+            <div class="form-group">
+                <label>Nume serviciu</label>
+                <input type="text" id="serviceName" name="Name" class="form-control" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Categorie</label>
+                <select id="serviceCategory" name="Category" class="form-control" required>
+                    <option value="">Selecteaza categoria</option>
+                    <option value="HAIR COLORING | HAIRCUT | HAIR STYLING">HAIR COLORING | HAIRCUT | HAIR STYLING</option>
+                    <option value="KERATIN | BOTOX TREATMENT">KERATIN | BOTOX TREATMENT</option>
+                    <option value="COIFFURE | HAIR STYLING">COIFFURE | HAIR STYLING</option>
+                    <option value="MAKE UP">MAKE UP</option>
+                    <option value="SKIN CARE SERVICES">SKIN CARE SERVICES</option>
+                    <option value="EYEBROWS">EYEBROWS</option>
+                    <option value="WAXING">WAXING</option>
+                    <option value="WAXING PACKAGE">WAXING PACKAGE</option>
+                    <option value="PROCEDURI INJECTABILE">PROCEDURI INJECTABILE</option>
+                    <option value="TOXINA BOTULINICA">TOXINA BOTULINICA</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Pret de la (MDL)</label>
+                <input type="number" id="servicePriceFrom" name="PriceFrom" class="form-control" step="1" min="0" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Pret pana la (MDL) (optional)</label>
+                <input type="number" id="servicePriceTo" name="PriceTo" class="form-control" step="1" min="0">
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Salveaza</button>
+                <button type="button" onclick="closeModal()" class="btn btn-outline">Anuleaza</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .admin-services { padding: 2rem; max-width: 1400px; margin: 0 auto; }
+    .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem; background: linear-gradient(135deg, rgba(255,218,185,0.1), transparent); padding: 1rem 1.5rem; border-radius: 15px; }
+    .page-header h1 { color: #FFDAB9; font-size: 1.8rem; margin: 0; }
+    .alert-success { background: rgba(255,218,185,0.2); border: 1px solid #FFDAB9; color: #FFDAB9; padding: 10px; border-radius: 8px; margin-bottom: 1rem; text-align: center; }
+    .services-cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem; }
+    .service-card { background: #2d2d2d; border-radius: 16px; overflow: hidden; transition: transform 0.2s ease; border: 1px solid rgba(255,218,185,0.2); }
+    .service-card:hover { transform: translateY(-3px); border-color: rgba(255,218,185,0.5); }
+    .service-card-header { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.2rem; background: rgba(0,0,0,0.3); border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .service-category { color: #FFDAB9; font-size: 0.75rem; font-weight: 500; }
+    .status-badge { padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: 600; }
+    .status-badge.active { background: rgba(255,218,185,0.2); color: #FFDAB9; border: 1px solid #FFDAB9; }
+    .status-badge.inactive { background: rgba(231,76,60,0.2); color: #e74c3c; border: 1px solid #e74c3c; }
+    .service-card-body { padding: 1.2rem; }
+    .service-name { color: #FFDAB9; font-size: 1.1rem; margin: 0 0 0.5rem 0; }
+    .service-price { color: #FFDAB9; font-size: 1rem; font-weight: 600; }
+    .service-card-actions { display: flex; gap: 0.75rem; padding: 1rem 1.2rem; border-top: 1px solid rgba(255,255,255,0.05); background: rgba(0,0,0,0.2); }
+    .btn-icon { flex: 1; padding: 8px 12px; border-radius: 8px; font-size: 0.8rem; font-weight: 500; cursor: pointer; transition: all 0.2s ease; border: none; background: rgba(255,255,255,0.08); color: #e0e0e0; text-align: center; }
+    .btn-icon:hover { background: #FFDAB9; color: #1a1a1a; }
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2000; justify-content: center; align-items: center; }
+    .modal-content { background: #2d2d2d; border-radius: 20px; max-width: 550px; width: 90%; max-height: 90vh; overflow-y: auto; position: relative; }
+    .modal-header { padding: 1.2rem 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .modal-header h2 { color: #FFDAB9; margin: 0; font-size: 1.4rem; }
+    form { padding: 1.5rem; }
+    .form-group { margin-bottom: 1.2rem; }
+    .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 500; font-size: 0.9rem; color: #dddddd; }
+    .form-control { width: 100%; padding: 10px 14px; background: #1a1a1a; border: 1px solid #444; border-radius: 10px; color: #e0e0e0; font-size: 0.9rem; }
+    .form-control:focus { outline: none; border-color: #FFDAB9; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .form-actions { display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1); }
+    .btn { display: inline-block; padding: 10px 24px; border-radius: 50px; text-decoration: none; font-weight: 600; transition: all 0.3s ease; cursor: pointer; border: none; font-size: 0.9rem; }
+    .btn-primary { background: linear-gradient(135deg, #FFDAB9, #e6c4a6); color: #1a1a1a; }
+    .btn-primary:hover { transform: translateY(-2px); }
+    .btn-outline { background: transparent; border: 2px solid #FFDAB9; color: #FFDAB9; }
+    .btn-outline:hover { background: #FFDAB9; color: #1a1a1a; }
+    @@media (max-width: 768px) { .admin-services { padding: 1rem; } .page-header { flex-direction: column; text-align: center; } .services-cards-grid { grid-template-columns: 1fr; } .form-row { grid-template-columns: 1fr; gap: 0; } .form-actions { flex-direction: column; } .form-actions .btn { width: 100%; } .service-card-actions { flex-direction: column; } .btn-icon { width: 100%; } }
+</style>
+
+<script>
+    function openAddModal() {
+        document.getElementById('modalTitle').innerHTML = 'Adauga serviciu nou';
+        document.getElementById('serviceForm').reset();
+        document.getElementById('serviceId').value = '0';
+        document.getElementById('serviceForm').action = '/Admin/AddService';
+        document.getElementById('serviceModal').style.display = 'flex';
+    }
+    
+    function closeModal() {
+        document.getElementById('serviceModal').style.display = 'none';
+    }
+    
+    function editService(id) {
+        fetch('/Admin/GetService?id=' + id)
+            .then(function(response) { return response.json(); })
+            .then(function(data) {
+                document.getElementById('modalTitle').innerHTML = 'Editare serviciu';
+                document.getElementById('serviceId').value = data.id;
+                document.getElementById('serviceName').value = data.name;
+                document.getElementById('serviceCategory').value = data.category;
+                document.getElementById('servicePriceFrom').value = data.priceFrom;
+                document.getElementById('servicePriceTo').value = data.priceTo || '';
+                document.getElementById('serviceForm').action = '/Admin/EditService';
+                document.getElementById('serviceModal').style.display = 'flex';
+            });
+    }
+    
+    window.onclick = function(event) {
+        var modal = document.getElementById('serviceModal');
+        if (event.target == modal) {
+            modal.style.display = 'none';
+        }
+    }
+</script>

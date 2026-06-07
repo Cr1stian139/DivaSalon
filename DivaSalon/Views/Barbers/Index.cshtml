@@ -1,0 +1,214 @@
+﻿@model List<DivaSalon.Models.Barber>
+@{
+    ViewData["Title"] = "Specialistii Nostri - DivaSalon";
+}
+
+<div class="barbers-page">
+    <div class="barbers-header">
+        <h1>Specialistii Nostri</h1>
+        <p>Profesionisti dedicati sa va ofere cea mai buna experienta</p>
+    </div>
+
+    <div class="barbers-grid">
+        @foreach (var barber in Model)
+        {
+            <div class="barber-card">
+                <div class="barber-image">
+                    @if (!string.IsNullOrEmpty(barber.ImageUrl))
+                    {
+                        <img src="@barber.ImageUrl" alt="@barber.FullName">
+                    }
+                    else
+                    {
+                        <div class="image-placeholder">👤</div>
+                    }
+                </div>
+                <div class="barber-info">
+                    <h3>@barber.FullName</h3>
+                    <div class="barber-specialization">@barber.Specialization</div>
+                    <p class="barber-description">@barber.Description</p>
+                    <div class="barber-rating">
+                        @for (int i = 0; i < 5; i++)
+                        {
+                            if (i < Math.Floor(barber.Rating))
+                            {
+                                <span>★</span>
+                            }
+                            else if (i < barber.Rating)
+                            {
+                                <span>½</span>
+                            }
+                            else
+                            {
+                                <span>☆</span>
+                            }
+                        }
+                        <span class="rating-value">(@barber.Rating)</span>
+                    </div>
+                    <a href="/Orders/Create" class="btn btn-primary">Programeaza-te</a>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    .barbers-page {
+        padding: 2rem;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .barbers-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+        .barbers-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #FFDAB9;
+        }
+
+        .barbers-header p {
+            color: #aaaaaa;
+        }
+
+    .barbers-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    .barber-card {
+        background: #2d2d2d;
+        border-radius: 20px;
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: 1px solid rgba(255, 218, 185, 0.2);
+        display: flex;
+        flex-direction: row;
+        align-items: stretch;
+    }
+
+        .barber-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 218, 185, 0.5);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+    .barber-image {
+        width: 250px;
+        flex-shrink: 0;
+        overflow: hidden;
+        background: #1a1a1a;
+    }
+
+        .barber-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+    .barber-card:hover .barber-image img {
+        transform: scale(1.05);
+    }
+
+    .image-placeholder {
+        width: 100%;
+        height: 100%;
+        min-height: 250px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 5rem;
+        background: linear-gradient(135deg, #2d2d2d, #1a1a1a);
+        color: #FFDAB9;
+    }
+
+    .barber-info {
+        flex: 1;
+        padding: 1.8rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+        .barber-info h3 {
+            color: #FFDAB9;
+            margin-bottom: 0.25rem;
+            font-size: 1.6rem;
+        }
+
+    .barber-specialization {
+        color: #FFDAB9;
+        font-weight: 500;
+        margin-bottom: 0.75rem;
+        font-size: 1rem;
+    }
+
+    .barber-description {
+        margin: 0.75rem 0;
+        color: #cccccc;
+        line-height: 1.5;
+        font-size: 0.95rem;
+    }
+
+    .barber-rating {
+        color: #FFDAB9;
+        margin: 0.75rem 0 1rem 0;
+        font-size: 1.1rem;
+    }
+
+    .rating-value {
+        color: #aaaaaa;
+        margin-left: 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #FFDAB9, #e6c4a6);
+        color: #1a1a1a;
+        padding: 10px 24px;
+        border-radius: 25px;
+        text-decoration: none;
+        display: inline-block;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        width: fit-content;
+    }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255,218,185,0.4);
+        }
+
+    @@media (max-width: 768px) {
+        .barbers-page {
+            padding: 1rem;
+        }
+
+        .barber-card {
+            flex-direction: column;
+        }
+
+        .barber-image {
+            width: 100%;
+            height: 250px;
+        }
+
+        .barber-info {
+            padding: 1.2rem;
+        }
+
+            .barber-info h3 {
+                font-size: 1.3rem;
+            }
+
+        .btn-primary {
+            width: 100%;
+            text-align: center;
+        }
+    }
+</style>

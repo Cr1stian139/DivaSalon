@@ -1,0 +1,73 @@
+﻿@{
+    ViewData["Title"] = "Anulare Programare";
+}
+
+<div class="cancel-confirmation">
+    <div class="confirmation-card">
+        <h1>Programare anulata</h1>
+        <p>Programarea ta a fost anulata cu succes.</p>
+        <div class="buttons">
+            <a href="/Orders/MyOrders" class="btn btn-outline">Vezi toate comenzile</a>
+            <a href="/Orders/Create" class="btn btn-primary">Noua programare</a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .cancel-confirmation {
+        min-height: 60vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+    }
+
+    .confirmation-card {
+        text-align: center;
+        background: #2d2d2d;
+        padding: 3rem;
+        border-radius: 20px;
+        max-width: 500px;
+        border: 1px solid rgba(255, 218, 185, 0.3);
+    }
+
+        .confirmation-card h1 {
+            color: #FFDAB9;
+            margin-bottom: 1rem;
+        }
+
+    .buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-top: 2rem;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #FFDAB9, #e6c4a6);
+        color: #1a1a1a;
+        padding: 10px 20px;
+        border-radius: 25px;
+        text-decoration: none;
+    }
+
+    .btn-outline {
+        background: transparent;
+        border: 2px solid #FFDAB9;
+        color: #FFDAB9;
+        padding: 10px 20px;
+        border-radius: 25px;
+        text-decoration: none;
+    }
+
+    @@media (max-width: 768px) {
+        .confirmation-card {
+            padding: 2rem;
+            margin: 1rem;
+        }
+
+        .buttons {
+            flex-direction: column;
+        }
+    }
+</style>

@@ -1,0 +1,179 @@
+﻿@{
+    ViewData["Title"] = "DivaSalon - Frizerie Premium";
+}
+
+<div class="hero">
+    <div class="hero-content">
+        <img src="/images/logo/logo.png" alt="DivaSalon" class="hero-logo" />
+        <h1>Transforma-ti stilul la <span class="highlight">DivaSalon</span></h1>
+        <p>Frizerie premium in inima orasului. Tunsori moderne, ingrijire profesionala si experiente unice.</p>
+        <div class="hero-buttons">
+            <a href="/Orders/Create" class="btn btn-primary">Programeaza-te acum</a>
+            <a href="/Services" class="btn btn-outline">Vezi serviciile</a>
+        </div>
+    </div>
+</div>
+
+<section class="features">
+    <div class="container">
+        <h2 class="section-title">De ce sa ne alegi?</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon"></div>
+                <h3>Specialisti profesionisti</h3>
+                <p>Peste 10 ani de experienta in arta tunsului</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"></div>
+                <h3>Produse premium</h3>
+                <p>Folosim numai produse de calitate</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"></div>
+                <h3>Confort maxim</h3>
+                <p>Salon modern si atmosfera relaxanta</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"></div>
+                <h3>Igiena exemplara</h3>
+                <p>Toate ustensilele sunt sterilizate</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .features {
+        padding: 4rem 2rem;
+        background: #2d2d2d;
+    }
+
+    .hero-logo {
+        height: 120px;
+        width: auto;
+        margin-bottom: 1.5rem;
+    }
+
+    .section-title {
+        text-align: center;
+        font-size: 2.5rem;
+        margin-bottom: 3rem;
+        color: #e0e0e0;
+    }
+
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .feature-card {
+        text-align: center;
+        padding: 2rem;
+        background: #1a1a1a;
+        border-radius: 15px;
+        transition: transform 0.3s ease;
+        border: 1px solid rgba(255, 218, 185, 0.2);
+    }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 218, 185, 0.5);
+        }
+
+    .feature-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+    }
+
+    .feature-card h3 {
+        margin-bottom: 0.5rem;
+        color: #FFDAB9;
+    }
+
+    .hero {
+        background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+    }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            color: #e0e0e0;
+        }
+
+            .hero h1 .highlight {
+                color: #FFDAB9;
+            }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            color: #aaaaaa;
+        }
+
+    .hero-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .btn {
+        display: inline-block;
+        padding: 12px 32px;
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        border: none;
+        font-size: 1rem;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #FFDAB9, #e6c4a6);
+        color: #1a1a1a;
+    }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 218, 185, 0.4);
+        }
+
+    .btn-outline {
+        background: transparent;
+        border: 2px solid #FFDAB9;
+        color: #FFDAB9;
+    }
+
+        .btn-outline:hover {
+            background: #FFDAB9;
+            color: #1a1a1a;
+        }
+
+    .container {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    @@media (max-width: 768px) {
+        .hero h1 {
+            font-size: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+        }
+
+        .features {
+            padding: 2rem 1rem;
+        }
+    }
+</style>

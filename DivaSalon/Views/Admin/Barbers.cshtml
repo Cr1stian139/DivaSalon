@@ -1,0 +1,172 @@
+﻿@model List<DivaSalon.Models.Barber>
+@{
+    ViewData["Title"] = "Gestionare Specialisti";
+}
+
+<div class="admin-barbers">
+    <div class="page-header">
+        <h1>Gestionare Specialisti</h1>
+        <button onclick="openAddModal()" class="btn btn-primary">Adauga specialist nou</button>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert-success">@TempData["Success"]</div>
+    }
+
+    <div class="barbers-grid">
+        @foreach (var barber in Model)
+        {
+            <div class="barber-admin-card">
+                <div class="barber-image">
+                    <img src="@(string.IsNullOrEmpty(barber.ImageUrl) ? "/images/default-barber.jpg" : barber.ImageUrl)" alt="@barber.FullName">
+                </div>
+                <div class="barber-info">
+                    <div class="barber-header">
+                        <h3>@barber.FullName</h3>
+                        <div class="status-badge @(barber.IsActive ? "active" : "inactive")">
+                            @(barber.IsActive ? "Activ" : "Inactiv")
+                        </div>
+                    </div>
+                    <p class="specialization">@barber.Specialization</p>
+                    <p class="description">@barber.Description</p>
+                    <div class="barber-details">
+                        <span class="detail-item">Rating: @barber.Rating</span>
+                    </div>
+                    <div class="card-actions">
+                        <button onclick="editBarber(@barber.Id)" class="btn-icon">Editeaza</button>
+                        <form method="post" asp-action="ToggleBarberStatus" asp-controller="Admin" style="display: inline; flex: 1;">
+                            <input type="hidden" name="id" value="@barber.Id" />
+                            <button type="submit" class="btn-icon" style="width: 100%;">
+                                @(barber.IsActive ? "Dezactiveaza" : "Activeaza")
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<div id="barberModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modalTitle">Adauga specialist nou</h2>
+            <span onclick="closeModal()" style="font-size:28px; cursor:pointer; color:#aaa; position:absolute; right:20px; top:10px;">&times;</span>
+        </div>
+        <form id="barberForm" method="post" asp-action="AddBarber" asp-controller="Admin">
+            @Html.AntiForgeryToken()
+            <input type="hidden" id="barberId" name="Id" value="0">
+            
+            <div class="form-group">
+                <label>Nume complet</label>
+                <input type="text" id="barberName" name="FullName" class="form-control" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Specializare</label>
+                <input type="text" id="barberSpecialization" name="Specialization" class="form-control" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Descriere</label>
+                <textarea id="barberDescription" name="Description" class="form-control" rows="3"></textarea>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Rating (0-5)</label>
+                    <input type="number" id="barberRating" name="Rating" class="form-control" step="0.1" min="0" max="5">
+                </div>
+                <div class="form-group">
+                    <label>URL Poza</label>
+                    <input type="text" id="barberImage" name="ImageUrl" class="form-control" placeholder="/images/specialists/poza.jpg">
+                </div>
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Salveaza</button>
+                <button type="button" onclick="closeModal()" class="btn btn-outline">Anuleaza</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .admin-barbers { padding: 2rem; max-width: 1400px; margin: 0 auto; }
+    .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem; background: linear-gradient(135deg, rgba(255,218,185,0.1), transparent); padding: 1rem 1.5rem; border-radius: 15px; }
+    .page-header h1 { color: #FFDAB9; font-size: 1.8rem; margin: 0; }
+    .alert-success { background: rgba(255,218,185,0.2); border: 1px solid #FFDAB9; color: #FFDAB9; padding: 10px; border-radius: 8px; margin-bottom: 1rem; text-align: center; }
+    .barbers-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 1.5rem; }
+    .barber-admin-card { display: flex; background: #2d2d2d; border-radius: 16px; overflow: hidden; transition: transform 0.2s ease; border: 1px solid rgba(255,218,185,0.2); }
+    .barber-admin-card:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.3); border-color: rgba(255,218,185,0.5); }
+    .barber-image { width: 130px; min-width: 130px; background: #1a1a1a; }
+    .barber-image img { width: 100%; height: 100%; object-fit: cover; aspect-ratio: 1 / 1; }
+    .barber-info { flex: 1; padding: 1.2rem; }
+    .barber-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
+    .barber-header h3 { color: #FFDAB9; font-size: 1.2rem; margin: 0; }
+    .status-badge { padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: 600; }
+    .status-badge.active { background: rgba(255,218,185,0.2); color: #FFDAB9; border: 1px solid #FFDAB9; }
+    .status-badge.inactive { background: rgba(231,76,60,0.2); color: #e74c3c; border: 1px solid #e74c3c; }
+    .specialization { color: #FFDAB9; font-size: 0.85rem; margin: 0; }
+    .description { font-size: 0.8rem; color: #bbbbbb; line-height: 1.4; margin: 0.5rem 0; }
+    .barber-details { display: flex; gap: 1rem; flex-wrap: wrap; margin: 0.5rem 0; }
+    .detail-item { background: rgba(255,255,255,0.05); padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; color: #cccccc; }
+    .card-actions { display: flex; gap: 0.75rem; margin-top: 0.5rem; }
+    .btn-icon { flex: 1; padding: 8px 12px; border-radius: 8px; font-size: 0.8rem; font-weight: 500; cursor: pointer; transition: all 0.2s ease; border: none; background: rgba(255,255,255,0.08); color: #e0e0e0; text-align: center; }
+    .btn-icon:hover { background: #FFDAB9; color: #1a1a1a; }
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2000; justify-content: center; align-items: center; }
+    .modal-content { background: #2d2d2d; border-radius: 20px; max-width: 550px; width: 90%; max-height: 90vh; overflow-y: auto; position: relative; }
+    .modal-header { padding: 1.2rem 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .modal-header h2 { color: #FFDAB9; margin: 0; font-size: 1.4rem; }
+    form { padding: 1.5rem; }
+    .form-group { margin-bottom: 1.2rem; }
+    .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 500; font-size: 0.9rem; color: #dddddd; }
+    .form-control { width: 100%; padding: 10px 14px; background: #1a1a1a; border: 1px solid #444; border-radius: 10px; color: #e0e0e0; font-size: 0.9rem; }
+    .form-control:focus { outline: none; border-color: #FFDAB9; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .form-actions { display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1); }
+    .btn { display: inline-block; padding: 10px 24px; border-radius: 50px; text-decoration: none; font-weight: 600; transition: all 0.3s ease; cursor: pointer; border: none; font-size: 0.9rem; }
+    .btn-primary { background: linear-gradient(135deg, #FFDAB9, #e6c4a6); color: #1a1a1a; }
+    .btn-primary:hover { transform: translateY(-2px); }
+    .btn-outline { background: transparent; border: 2px solid #FFDAB9; color: #FFDAB9; }
+    .btn-outline:hover { background: #FFDAB9; color: #1a1a1a; }
+    @@media (max-width: 768px) { .admin-barbers { padding: 1rem; } .page-header { flex-direction: column; text-align: center; } .barbers-grid { grid-template-columns: 1fr; } .barber-admin-card { flex-direction: column; } .barber-image { width: 100%; height: 180px; } .form-row { grid-template-columns: 1fr; gap: 0; } .form-actions { flex-direction: column; } .form-actions .btn { width: 100%; } .card-actions { flex-direction: column; } .btn-icon { width: 100%; } }
+</style>
+
+<script>
+    function openAddModal() {
+        document.getElementById('modalTitle').innerHTML = 'Adauga specialist nou';
+        document.getElementById('barberForm').reset();
+        document.getElementById('barberId').value = '0';
+        document.getElementById('barberForm').action = '/Admin/AddBarber';
+        document.getElementById('barberModal').style.display = 'flex';
+    }
+    
+    function closeModal() {
+        document.getElementById('barberModal').style.display = 'none';
+    }
+    
+    function editBarber(id) {
+        fetch('/Admin/GetBarber?id=' + id)
+            .then(function(response) { return response.json(); })
+            .then(function(data) {
+                document.getElementById('modalTitle').innerHTML = 'Editare specialist';
+                document.getElementById('barberId').value = data.id;
+                document.getElementById('barberName').value = data.fullName;
+                document.getElementById('barberSpecialization').value = data.specialization;
+                document.getElementById('barberDescription').value = data.description;
+                document.getElementById('barberRating').value = data.rating;
+                document.getElementById('barberImage').value = data.imageUrl;
+                document.getElementById('barberForm').action = '/Admin/EditBarber';
+                document.getElementById('barberModal').style.display = 'flex';
+            });
+    }
+    
+    window.onclick = function(event) {
+        var modal = document.getElementById('barberModal');
+        if (event.target == modal) {
+            modal.style.display = 'none';
+        }
+    }
+</script>

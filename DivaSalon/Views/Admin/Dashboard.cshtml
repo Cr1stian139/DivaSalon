@@ -1,0 +1,282 @@
+﻿@model DivaSalon.Models.ViewModels.AdminOrderViewModel
+@{
+    ViewData["Title"] = "Admin Dashboard - DivaSalon";
+}
+
+<div class="admin-dashboard">
+    <div class="dashboard-header">
+        <h1>Dashboard Administrare</h1>
+        <p>Gestionare comenzi si programari</p>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-number">@Model.PendingOrders.Count</div>
+            <div class="stat-label">In asteptare</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">@Model.ConfirmedOrders.Count</div>
+            <div class="stat-label">Confirmate</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">@Model.InProgressOrders.Count</div>
+            <div class="stat-label">In desfasurare</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">@Model.CompletedOrders.Count</div>
+            <div class="stat-label">Finalizate</div>
+        </div>
+    </div>
+
+    <div class="admin-actions">
+        <a href="/Admin/Services" class="btn btn-primary">Gestionare Servicii</a>
+        <a href="/Admin/Barbers" class="btn btn-primary">Gestionare Specialisti</a>
+    </div>
+
+    <div class="orders-section">
+        <h2>Comenzi in asteptare</h2>
+        <div class="orders-table-container">
+            <table class="orders-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Client</th>
+                        <th>Telefon</th>
+                        <th>Data</th>
+                        <th>Frizer</th>
+                        <th>Total</th>
+                        <th>Actiuni</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var order in Model.PendingOrders)
+                    {
+                        <tr>
+                            <td>@order.Id</td>
+                            <td>@order.CustomerName</td>
+                            <td>@order.CustomerPhone</td>
+                            <td>@order.AppointmentDate.ToString("dd/MM HH:mm")</td>
+                            <td>@(order.Barber?.FullName ?? "-")</td>
+                            <td>@order.TotalAmount MDL</td>
+                            <td>
+                                <form asp-action="UpdateOrderStatus" method="post" class="status-form">
+                                    <input type="hidden" name="orderId" value="@order.Id" />
+                                    <select name="newStatus" class="status-select" onchange="this.form.submit()">
+                                        <option value="Pending">In asteptare</option>
+                                        <option value="Confirmed">Confirma</option>
+                                        <option value="InProgress">In desfasurare</option>
+                                        <option value="Completed">Finalizat</option>
+                                        <option value="Cancelled">Anulat</option>
+                                    </select>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<style>
+    .admin-dashboard {
+        padding: 2rem;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .dashboard-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+        .dashboard-header h1 {
+            color: #FFDAB9;
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .dashboard-header p {
+            color: #aaaaaa;
+            font-size: 1rem;
+        }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-card {
+        background: #2d2d2d;
+        padding: 1.5rem;
+        border-radius: 16px;
+        text-align: center;
+        border: 1px solid rgba(255, 218, 185, 0.2);
+        transition: all 0.3s ease;
+    }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(255, 218, 185, 0.5);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+    .stat-number {
+        font-size: 2.8rem;
+        font-weight: bold;
+        color: #FFDAB9;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+        color: #cccccc;
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+
+    .admin-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-bottom: 2rem;
+    }
+
+        .admin-actions .btn {
+            padding: 12px 28px;
+            font-size: 0.95rem;
+        }
+
+    .orders-section {
+        background: #2d2d2d;
+        border-radius: 20px;
+        padding: 1.5rem;
+        border: 1px solid rgba(255, 218, 185, 0.2);
+    }
+
+        .orders-section h2 {
+            color: #FFDAB9;
+            font-size: 1.4rem;
+            margin-bottom: 1.2rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(255, 218, 185, 0.3);
+        }
+
+    .orders-table-container {
+        overflow-x: auto;
+    }
+
+    .orders-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .orders-table th,
+        .orders-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .orders-table th {
+            color: #FFDAB9;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .orders-table td {
+            color: #e0e0e0;
+            font-size: 0.9rem;
+        }
+
+        .orders-table tr:hover {
+            background: rgba(255, 218, 185, 0.05);
+        }
+
+    .status-select {
+        padding: 6px 10px;
+        background: #1a1a1a;
+        color: #e0e0e0;
+        border: 1px solid #FFDAB9;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 0.85rem;
+        transition: all 0.2s ease;
+    }
+
+        .status-select:hover {
+            background: rgba(255, 218, 185, 0.1);
+        }
+
+    .status-form {
+        display: inline;
+    }
+
+    .btn {
+        display: inline-block;
+        padding: 10px 24px;
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        border: none;
+        font-size: 0.9rem;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #FFDAB9, #e6c4a6);
+        color: #1a1a1a;
+    }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 218, 185, 0.4);
+        }
+
+    @@media (max-width: 768px) {
+        .admin-dashboard {
+            padding: 1rem;
+        }
+
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+        }
+
+        .admin-actions {
+            flex-direction: column;
+        }
+
+            .admin-actions .btn {
+                width: 100%;
+                text-align: center;
+            }
+
+        .orders-table th,
+        .orders-table td {
+            padding: 8px;
+            font-size: 0.8rem;
+        }
+
+        .status-select {
+            padding: 4px 8px;
+            font-size: 0.75rem;
+        }
+    }
+
+    @@media (max-width: 480px) {
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .orders-section {
+            padding: 1rem;
+        }
+    }
+</style>

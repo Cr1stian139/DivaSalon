@@ -1,0 +1,411 @@
+﻿@model DivaSalon.Models.ViewModels.OrderViewModel
+@{
+    ViewData["Title"] = "Programare Online - DivaSalon";
+}
+
+<div class="order-container">
+    <div class="order-header">
+        <h1>Programeaza-te acum</h1>
+        <p>Completeaza formularul pentru a rezerva serviciul dorit</p>
+    </div>
+
+    <form asp-action="Create" method="post" id="orderForm">
+        <div class="order-form">
+            <div class="form-section">
+                <h2>1. Selecteaza serviciile</h2>
+                <div class="services-selection">
+                    @for (int i = 0; i < Model.AvailableServices.Count; i++)
+                    {
+                        var service = Model.AvailableServices[i];
+                        <label class="service-option">
+                            <input type="checkbox"
+                                   class="service-checkbox"
+                                   data-pricefrom="@service.PriceFrom"
+                                   data-priceto="@(service.PriceTo ?? service.PriceFrom)"
+                                   value="@service.Id"
+                                   name="SelectedServiceIds" />
+                            <div class="service-info">
+                                <span class="service-name">@service.Name</span>
+                                <span class="service-price-range">
+                                    @if (service.PriceTo.HasValue && service.PriceTo.Value > 0 && service.PriceTo.Value != service.PriceFrom)
+                                    {
+                                        <text>@service.PriceFrom - @service.PriceTo.Value MDL</text>
+                                    }
+                                    else
+                                    {
+                                        <text>De la @service.PriceFrom MDL</text>
+                                    }
+                                </span>
+                            </div>
+                        </label>
+                    }
+                </div>
+                <div class="total-price">
+                    <span>Suma finala:</span>
+                    <span id="total-min">0</span> - <span id="total-max">0</span> MDL
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h2>2. Alege specialistul</h2>
+                <div class="form-group">
+                    <select id="barberSelect" name="Order.BarberId" class="form-control" required>
+                        <option value="">Selecteaza un specialist</option>
+                        @foreach (var barber in Model.AvailableBarbers)
+                        {
+                            <option value="@barber.Id">@barber.FullName - @barber.Specialization</option>
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h2>3. Datele tale</h2>
+                <div class="form-group">
+                    <label asp-for="Order.CustomerName">Nume complet *</label>
+                    <input asp-for="Order.CustomerName" class="form-control" required />
+                </div>
+                <div class="form-group">
+                    <label asp-for="Order.CustomerPhone">Telefon *</label>
+                    <input asp-for="Order.CustomerPhone" class="form-control" type="tel" required />
+                </div>
+                
+                <div class="form-group">
+                    <label>Alege data programarii *</label>
+                    <input type="date" id="appointmentDate" class="form-control" required />
+                </div>
+                
+                <div class="form-group">
+                    <label>Alege ora programarii *</label>
+                    <select id="appointmentTime" class="form-control" required disabled>
+                        <option value="">Mai intai selecteaza data si specialistul</option>
+                    </select>
+                </div>
+                
+                <div class="loading-spinner" id="loadingSpinner" style="display: none; text-align: center; padding: 10px;">
+                    <span>Se incarca orele disponibile...</span>
+                </div>
+                
+                <input type="hidden" id="AppointmentDateTime" name="Order.AppointmentDate" />
+                
+                <div class="form-group">
+                    <label asp-for="Order.Notes">Notite aditionale (optional)</label>
+                    <textarea asp-for="Order.Notes" class="form-control" rows="3" placeholder="Orice informatie suplimentara..."></textarea>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Confirma programarea</button>
+                <a href="/Services" class="btn btn-outline">Inapoi la servicii</a>
+            </div>
+        </div>
+    </form>
+</div>
+
+<style>
+    .order-container {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+    }
+
+    .order-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+        .order-header h1 {
+            color: #FFDAB9;
+            margin-bottom: 0.5rem;
+        }
+
+        .order-header p {
+            color: #aaaaaa;
+        }
+
+    .order-form {
+        background: #2d2d2d;
+        border-radius: 20px;
+        padding: 2rem;
+    }
+
+    .form-section {
+        margin-bottom: 2rem;
+        padding-bottom: 2rem;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+        .form-section h2 {
+            color: #FFDAB9;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+    .form-group {
+        margin-bottom: 1rem;
+    }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #dddddd;
+            font-weight: 500;
+        }
+
+    .form-control {
+        width: 100%;
+        padding: 10px;
+        background: #1a1a1a;
+        border: 1px solid #444;
+        border-radius: 8px;
+        color: #e0e0e0;
+        font-size: 1rem;
+    }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #FFDAB9;
+        }
+
+        .form-control:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+    select.form-control {
+        cursor: pointer;
+    }
+
+    .services-selection {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .service-option {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.75rem;
+        background: #1a1a1a;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+        .service-option:hover {
+            background: #3a3a3a;
+        }
+
+        .service-option input {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+    .service-info {
+        flex: 1;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .service-name {
+        font-weight: 500;
+        color: #e0e0e0;
+    }
+
+    .service-price-range {
+        color: #FFDAB9;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+    .total-price {
+        margin-top: 1rem;
+        padding: 1rem;
+        background: #e6c4a6;
+        color: #1a1a1a;
+        border-radius: 10px;
+        text-align: right;
+        font-size: 1.2rem;
+        font-weight: bold;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-top: 2rem;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #FFDAB9, #e6c4a6);
+        color: #1a1a1a;
+        padding: 12px 24px;
+        border-radius: 25px;
+        border: none;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255,218,185,0.4);
+        }
+
+    .btn-outline {
+        background: transparent;
+        border: 2px solid #FFDAB9;
+        color: #FFDAB9;
+        padding: 12px 24px;
+        border-radius: 25px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+        .btn-outline:hover {
+            background: #FFDAB9;
+            color: #1a1a1a;
+        }
+
+    .loading-spinner {
+        color: #FFDAB9;
+    }
+
+    @@media (max-width: 768px) {
+        .order-form {
+            padding: 1rem;
+        }
+
+        .service-info {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .form-actions {
+            flex-direction: column;
+        }
+
+            .form-actions .btn {
+                width: 100%;
+                text-align: center;
+            }
+    }
+</style>
+
+<script>
+    // Calculeaza totalul serviciilor selectate
+    function calculateTotal() {
+        var totalMin = 0;
+        var totalMax = 0;
+        
+        document.querySelectorAll('.service-checkbox:checked').forEach(function(checkbox) {
+            var priceFrom = parseFloat(checkbox.dataset.pricefrom);
+            var priceTo = parseFloat(checkbox.dataset.priceto);
+            totalMin += priceFrom;
+            totalMax += priceTo;
+        });
+        
+        document.getElementById('total-min').textContent = totalMin;
+        document.getElementById('total-max').textContent = totalMax;
+    }
+    
+    // Seteaza data minima (maini)
+    function setMinDate() {
+        var dateInput = document.getElementById('appointmentDate');
+        if (dateInput) {
+            var tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            var year = tomorrow.getFullYear();
+            var month = String(tomorrow.getMonth() + 1).padStart(2, '0');
+            var day = String(tomorrow.getDate()).padStart(2, '0');
+            dateInput.min = year + '-' + month + '-' + day;
+        }
+    }
+    
+    // Incarca orele disponibile
+    async function loadAvailableTimes() {
+        var barberId = document.getElementById('barberSelect').value;
+        var date = document.getElementById('appointmentDate').value;
+        var timeSelect = document.getElementById('appointmentTime');
+        var loadingSpinner = document.getElementById('loadingSpinner');
+        
+        if (!barberId || !date) {
+            timeSelect.innerHTML = '<option value="">Selecteaza mai intai data si specialistul</option>';
+            timeSelect.disabled = true;
+            return;
+        }
+        
+        loadingSpinner.style.display = 'block';
+        timeSelect.innerHTML = '<option value="">Se incarca orele...</option>';
+        timeSelect.disabled = true;
+        
+        try {
+            var response = await fetch('/Orders/GetAvailableTimes?barberId=' + barberId + '&date=' + date);
+            var availableTimes = await response.json();
+            
+            if (availableTimes.length === 0) {
+                timeSelect.innerHTML = '<option value="">Nu exista ore disponibile pentru aceasta zi</option>';
+                timeSelect.disabled = true;
+            } else {
+                var options = '<option value="">Selecteaza o ora</option>';
+                availableTimes.forEach(function(time) {
+                    options += '<option value="' + time + '">' + time + '</option>';
+                });
+                timeSelect.innerHTML = options;
+                timeSelect.disabled = false;
+            }
+        } catch (error) {
+            console.error('Error loading times:', error);
+            timeSelect.innerHTML = '<option value="">Eroare la incarcare. Reincarca pagina.</option>';
+            timeSelect.disabled = true;
+        } finally {
+            loadingSpinner.style.display = 'none';
+        }
+    }
+    
+    // Evenimente
+    document.getElementById('barberSelect').addEventListener('change', loadAvailableTimes);
+    document.getElementById('appointmentDate').addEventListener('change', loadAvailableTimes);
+    
+    // Combina data si ora inainte de trimitere
+    document.getElementById('orderForm').addEventListener('submit', function(e) {
+        var date = document.getElementById('appointmentDate').value;
+        var time = document.getElementById('appointmentTime').value;
+        var barberId = document.getElementById('barberSelect').value;
+        
+        if (!barberId) {
+            e.preventDefault();
+            alert('Te rugam sa selectezi un specialist!');
+            return false;
+        }
+        
+        if (!date) {
+            e.preventDefault();
+            alert('Te rugam sa selectezi o data!');
+            return false;
+        }
+        
+        if (!time) {
+            e.preventDefault();
+            alert('Te rugam sa selectezi o ora!');
+            return false;
+        }
+        
+        var dateTime = date + 'T' + time + ':00';
+        document.getElementById('AppointmentDateTime').value = dateTime;
+    });
+    
+    // Initialize
+    document.querySelectorAll('.service-checkbox').forEach(function(cb) {
+        cb.addEventListener('change', calculateTotal);
+    });
+    
+    calculateTotal();
+    setMinDate();
+</script>

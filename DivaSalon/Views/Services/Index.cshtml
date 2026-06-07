@@ -1,0 +1,179 @@
+﻿@model List<DivaSalon.Models.Service>
+@{
+    ViewData["Title"] = "Serviciile Noastre - DivaSalon";
+    var categories = Model.Select(s => s.Category).Distinct().ToList();
+}
+
+<div class="services-page">
+    <div class="services-header">
+        <h1>Serviciile Noastre</h1>
+        <p>Descopera gama noastra variata de servicii profesionale</p>
+    </div>
+
+    <div class="filter-section">
+        <button class="filter-btn active" data-category="all">Toate</button>
+        @foreach (var cat in categories)
+        {
+            <button class="filter-btn" data-category="@cat">@cat</button>
+        }
+    </div>
+
+    <div class="services-grid" id="services-grid">
+        @foreach (var service in Model)
+        {
+            <div class="service-card" data-category="@service.Category">
+                <div class="service-info">
+                    <h3>@service.Name</h3>
+                    <div class="service-category">@service.Category</div>
+                    <div class="service-price">
+                        @if (service.PriceTo.HasValue && service.PriceTo.Value > 0 && service.PriceTo.Value != service.PriceFrom)
+                        {
+                            <span>@service.PriceFrom - @service.PriceTo.Value MDL</span>
+                        }
+                        else
+                        {
+                            <span>De la @service.PriceFrom MDL</span>
+                        }
+                    </div>
+                    <a href="/Orders/Create" class="btn btn-primary">Alege</a>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    .services-page {
+        padding: 2rem;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .services-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+        .services-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: #FFDAB9;
+        }
+
+        .services-header p {
+            color: #aaaaaa;
+        }
+
+    .filter-section {
+        display: flex;
+        justify-content: center;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+        margin-bottom: 2rem;
+    }
+
+    .filter-btn {
+        padding: 8px 20px;
+        background: #2d2d2d;
+        border: 1px solid rgba(255, 218, 185, 0.3);
+        border-radius: 25px;
+        color: #e0e0e0;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 0.85rem;
+    }
+
+        .filter-btn.active,
+        .filter-btn:hover {
+            background: #FFDAB9;
+            color: #1a1a1a;
+            border-color: #FFDAB9;
+        }
+
+    .services-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .service-card {
+        background: #2d2d2d;
+        border-radius: 16px;
+        padding: 1.5rem;
+        transition: transform 0.3s ease;
+        border: 1px solid rgba(255, 218, 185, 0.2);
+    }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 218, 185, 0.5);
+        }
+
+    .service-info h3 {
+        color: #FFDAB9;
+        margin-bottom: 0.5rem;
+        font-size: 1.2rem;
+    }
+
+    .service-category {
+        color: #FFDAB9;
+        font-size: 0.8rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .service-price {
+        color: #FFDAB9;
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #FFDAB9, #e6c4a6);
+        color: #1a1a1a;
+        padding: 8px 20px;
+        border-radius: 25px;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+    }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+        }
+
+    @@media (max-width: 768px) {
+        .services-page {
+            padding: 1rem;
+        }
+
+        .filter-btn {
+            padding: 6px 14px;
+            font-size: 0.75rem;
+        }
+
+        .services-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<script>
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const category = this.dataset.category;
+            
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            
+            document.querySelectorAll('.service-card').forEach(card => {
+                if (category === 'all' || card.dataset.category === category) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    });
+</script>

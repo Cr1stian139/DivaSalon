@@ -1,0 +1,199 @@
+﻿@{
+    ViewData["Title"] = "Contact - DivaSalon";
+    var successMessage = TempData["SuccessMessage"] as string;
+}
+
+<div class="contact-page">
+    <div class="contact-header">
+        <h1>Contacteaza-ne</h1>
+        <p>Suntem aici sa raspundem intrebarilor tale</p>
+    </div>
+
+    @if (!string.IsNullOrEmpty(successMessage))
+    {
+        <div class="alert success">@successMessage</div>
+    }
+
+    <div class="contact-grid">
+        <div class="contact-info">
+            <div class="info-card">
+                <div class="info-icon">📍</div>
+                <h3>Locatie</h3>
+                <p>31 August 1989 4i</p>
+                <p>Cahul, Moldova</p>
+            </div>
+            <div class="info-card">
+                <div class="info-icon">📞</div>
+                <h3>Telefon</h3>
+                <p>0608 44 660</p>
+            </div>
+            <div class="info-card">
+                <div class="info-icon">✉️</div>
+                <h3>Email</h3>
+                <p>olgamotelica123@@gmail.com</p>
+            </div>
+            <div class="info-card">
+                <div class="info-icon">⏰</div>
+                <h3>Program</h3>
+                <p>Luni: Inchis</p>
+                <p>Marti - Sambata: 08:00 - 18:00</p>
+                <p>Duminica: 08:00 - 15:00</p>
+            </div>
+        </div>
+
+        <div class="contact-form">
+            <h2>Trimite-ne un mesaj</h2>
+            <form method="post" action="/Contact/SendMessage">
+                <div class="form-group">
+                    <label>Numele tau</label>
+                    <input type="text" name="name" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" name="email" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Subiect</label>
+                    <input type="text" name="subject" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>Mesaj</label>
+                    <textarea name="message" class="form-control" rows="5" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Trimite mesaj</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .contact-page {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    .contact-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+        .contact-header h1 {
+            color: #FFDAB9;
+            margin-bottom: 0.5rem;
+        }
+
+    .alert {
+        padding: 1rem;
+        border-radius: 10px;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+
+        .alert.success {
+            background: rgba(255, 218, 185, 0.2);
+            border: 1px solid #FFDAB9;
+            color: #FFDAB9;
+        }
+
+    .contact-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        margin-bottom: 3rem;
+    }
+
+    .contact-info {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+
+    .info-card {
+        background: #2d2d2d;
+        padding: 1.5rem;
+        border-radius: 15px;
+        text-align: center;
+        transition: transform 0.3s ease;
+        border: 1px solid rgba(255, 218, 185, 0.2);
+    }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 218, 185, 0.5);
+        }
+
+    .info-icon {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .info-card h3 {
+        color: #FFDAB9;
+        margin-bottom: 0.5rem;
+    }
+
+    .contact-form {
+        background: #2d2d2d;
+        padding: 2rem;
+        border-radius: 20px;
+    }
+
+        .contact-form h2 {
+            margin-bottom: 1.5rem;
+            color: #FFDAB9;
+        }
+
+    .form-group {
+        margin-bottom: 1rem;
+    }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+    .form-control {
+        width: 100%;
+        padding: 12px 16px;
+        background: #1a1a1a;
+        border: 1px solid #444;
+        border-radius: 10px;
+        color: #e0e0e0;
+        font-size: 1rem;
+    }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #FFDAB9;
+        }
+
+    .btn-block {
+        width: 100%;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #FFDAB9, #e6c4a6);
+        color: #1a1a1a;
+        padding: 12px 24px;
+        border-radius: 25px;
+        border: none;
+        cursor: pointer;
+        font-weight: 600;
+    }
+
+    @@media (max-width: 768px) {
+        .contact-page {
+            padding: 1rem;
+        }
+
+        .contact-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .contact-info {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>

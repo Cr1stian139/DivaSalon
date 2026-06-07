@@ -1,0 +1,439 @@
+:root {
+    --primary: #FFDAB9;
+    --primary-dark: #e6c4a6;
+    --primary-light: #ffe8d4;
+    --dark: #1e1e1e;
+    --darker: #2d2d2d;
+    --gray: #3a3a3a;
+    --light-gray: #4a4a4a;
+    --white: #f5f5f5;
+    --success: #2ecc71;
+    --warning: #f39c12;
+    --danger: #e74c3c;
+    --info: #3498db;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', 'Segoe UI', system-ui, sans-serif;
+    background-color: #1a1a1a;
+    color: #e0e0e0;
+    line-height: 1.6;
+}
+
+.navbar {
+    background: rgba(30, 30, 30, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 1rem 5%;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    border-bottom: 1px solid rgba(255, 218, 185, 0.3);
+}
+
+.navbar-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+}
+
+.logo-img {
+    height: 40px;
+    width: auto;
+}
+
+.logo-text {
+    font-size: 1.8rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #FFDAB9 0%, #e6c4a6 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.nav-menu {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+}
+
+.nav-link {
+    color: #e0e0e0;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+    position: relative;
+}
+
+    .nav-link::after {
+        content: '';
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: #FFDAB9;
+        transition: width 0.3s ease;
+    }
+
+    .nav-link:hover::after,
+    .nav-link.active::after {
+        width: 100%;
+    }
+
+    .nav-link:hover,
+    .nav-link.active {
+        color: #FFDAB9;
+    }
+
+.btn-primary {
+    background: linear-gradient(135deg, #FFDAB9, #e6c4a6);
+    color: #1a1a1a;
+    box-shadow: 0 4px 15px rgba(255, 218, 185, 0.3);
+}
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(255, 218, 185, 0.4);
+    }
+
+.btn-outline {
+    background: transparent;
+    border: 2px solid #FFDAB9;
+    color: #FFDAB9;
+}
+
+    .btn-outline:hover {
+        background: #FFDAB9;
+        color: #1a1a1a;
+    }
+
+.hero h1 .highlight {
+    color: #FFDAB9;
+}
+
+.service-card,
+.barber-card {
+    background: #2d2d2d;
+    border-radius: 20px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 218, 185, 0.2);
+}
+
+    .service-card:hover,
+    .barber-card:hover {
+        border-color: rgba(255, 218, 185, 0.5);
+    }
+
+.service-price {
+    color: #FFDAB9;
+}
+
+.form-control:focus {
+    border-color: #FFDAB9;
+    box-shadow: 0 0 0 3px rgba(255, 218, 185, 0.2);
+}
+
+.filter-btn.active,
+.filter-btn:hover {
+    background: #FFDAB9;
+    color: #1a1a1a;
+}
+
+.stat-number {
+    color: #FFDAB9;
+}
+
+.footer {
+    background: #1a1a1a;
+    border-top: 1px solid rgba(255, 218, 185, 0.2);
+}
+
+.footer-section h3,
+.footer-section h4 {
+    color: #FFDAB9;
+}
+
+.status-badge.active {
+    background: rgba(255, 218, 185, 0.2);
+    color: #FFDAB9;
+    border: 1px solid #FFDAB9;
+}
+
+.tab-btn.active {
+    background: #FFDAB9;
+    color: #1a1a1a;
+}
+
+.btn-icon.edit:hover {
+    background: #FFDAB9;
+    color: #1a1a1a;
+}
+
+.modal-header h2 {
+    color: #FFDAB9;
+}
+
+.close:hover {
+    color: #FFDAB9;
+}
+
+.detail-value.price {
+    color: #FFDAB9;
+}
+
+.service-name {
+    color: #FFDAB9;
+}
+
+.specialization {
+    color: #FFDAB9;
+}
+
+.barber-header h3 {
+    color: #FFDAB9;
+}
+
+.total-price {
+    background: #e6c4a6;
+    color: #1a1a1a;
+}
+
+.loading-spinner {
+    color: #FFDAB9;
+}
+
+
+
+
+
+
+/* Footer styling - marit si aranjat frumos */
+.footer {
+    background: #1a1a1a;
+    padding: 3rem 5% 1rem;
+    margin-top: 4rem;
+    border-top: 2px solid rgba(255, 218, 185, 0.3);
+}
+
+.footer-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2.5rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.footer-section {
+    margin-bottom: 1rem;
+}
+
+.footer-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 1.2rem;
+}
+
+.footer-logo-img {
+    height: 45px;
+    width: auto;
+}
+
+.footer-section h3 {
+    color: #FFDAB9;
+    font-size: 1.6rem;
+    margin: 0;
+}
+
+.footer-section h4 {
+    color: #FFDAB9;
+    font-size: 1.2rem;
+    margin-bottom: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+    .footer-section h4 .icon {
+        font-size: 1.3rem;
+    }
+
+.footer-description {
+    color: #cccccc;
+    line-height: 1.6;
+    font-size: 0.95rem;
+    margin-top: 0.5rem;
+}
+
+.footer-schedule,
+.footer-contact,
+.footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+    .footer-schedule li,
+    .footer-contact li,
+    .footer-links li {
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .footer-schedule .day {
+        width: 130px;
+        font-weight: 600;
+        color: #FFDAB9;
+    }
+
+    .footer-schedule .hours {
+        color: #e0e0e0;
+    }
+
+.contact-icon {
+    width: 30px;
+    font-size: 1.1rem;
+    color: #FFDAB9;
+}
+
+.footer-contact a {
+    color: #e0e0e0;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+    .footer-contact a:hover {
+        color: #FFDAB9;
+    }
+
+.footer-links li {
+    display: block;
+}
+
+.footer-links a {
+    color: #e0e0e0;
+    text-decoration: none;
+    transition: color 0.3s ease;
+    display: inline-block;
+    padding: 4px 0;
+}
+
+    .footer-links a:hover {
+        color: #FFDAB9;
+        transform: translateX(5px);
+    }
+
+.footer-bottom {
+    text-align: center;
+    padding-top: 2rem;
+    margin-top: 2rem;
+    border-top: 1px solid rgba(255, 218, 185, 0.2);
+    font-size: 0.85rem;
+    color: #888888;
+}
+
+    .footer-bottom .heart {
+        color: #FFDAB9;
+        font-size: 1rem;
+    }
+
+/* Responsive footer */
+@media (max-width: 768px) {
+    .footer {
+        padding: 2rem 1rem 1rem;
+    }
+
+    .footer-container {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .footer-section {
+        text-align: center;
+    }
+
+    .footer-logo {
+        justify-content: center;
+    }
+
+    .footer-section h4 {
+        justify-content: center;
+    }
+
+    .footer-schedule li,
+    .footer-contact li {
+        justify-content: center;
+    }
+
+    .footer-schedule .day {
+        width: auto;
+    }
+
+    .footer-bottom {
+        font-size: 0.75rem;
+    }
+}
+
+
+/* Logo marit */
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+}
+
+.logo-img {
+    height: 55px;
+    width: auto;
+}
+
+.logo-text {
+    font-size: 2rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #FFDAB9 0%, #e6c4a6 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+
+/* Marire text general footer */
+.footer-description {
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+.footer-schedule .hours {
+    font-size: 1rem;
+}
+
+.footer-contact a {
+    font-size: 1rem;
+}
+
+.footer-links a {
+    font-size: 1rem;
+}
+
+.footer-bottom p {
+    font-size: 0.9rem;
+}
